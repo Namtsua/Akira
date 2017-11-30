@@ -18,11 +18,23 @@ async def flushChannel(ctxt):
    while len(messages) > 0:
      await bot.delete_messages(messages[0:99])
 
-#@bot.command(pass_context=True)
-#async def sendInvite(ctxt):
-   # await bot.accept_invite("https://discord.gg/SFV2y5")
- #   invite = await bot.create_invite(ctxt.message.server)
-  #  await bot.send_message(ctxt.message.author, invite)
+"""Deletes every message in a specific channel"""
+async def flushSpecificChannel(channel):
+   print(channel.name)
+   messages = []
+   async for message in bot.logs_from(channel, limit = 1000000):
+     messages.append(message)
+   while len(messages) > 0:
+     await bot.delete_messages(messages[0:99])
 
+"""Deletes every message in every channel"""
+@bot.command()
+async def flushAllChannels():
+  channels = bot.get_all_channels()
+  for c in channels:
+    print(c.name)
+    if (c.type == discord.ChannelType.text):
+      await flushSpecificChannel(c)
+      
 
 bot.run('token')
