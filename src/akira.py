@@ -37,4 +37,18 @@ async def flushAllChannels():
       await flushSpecificChannel(c)
       
 
+"""Fluds channel with messages"""
+@bot.command()
+async def floodChannels():
+    channels = bot.get_all_channels()
+    for c in channels:
+        if (c.type == discord.ChannelType.text):
+            await floodChannel(c)
+
+async def floodChannel(channel):
+    counter = 100
+    while (counter > 0):
+        await bot.send_message(channel,(str(counter)))
+        counter -= 1
+
 bot.run('token')
