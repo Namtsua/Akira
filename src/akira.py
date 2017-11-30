@@ -20,7 +20,6 @@ async def flushChannel(ctxt):
 
 """Deletes every message in a specific channel"""
 async def flushSpecificChannel(channel):
-   print(channel.name)
    messages = []
    async for message in bot.logs_from(channel, limit = 1000000):
      messages.append(message)
@@ -29,26 +28,41 @@ async def flushSpecificChannel(channel):
        await bot.delete_messages(chunk)
 
 """Deletes every message in every channel"""
-@bot.command()
-async def flushAllChannels():
-  channels = bot.get_all_channels()
+@bot.command(pass_context = True)
+async def flushAllChannels(ctxt):
+  channels = ctxt.message.server.channels
   for c in channels:
     if (c.type == discord.ChannelType.text):
       await flushSpecificChannel(c)
       
 
-"""Fluds channel with messages"""
+"""Floods all channels with messages"""
 @bot.command()
-async def floodChannels():
+async def floodAllChannels():
     channels = bot.get_all_channels()
     for c in channels:
         if (c.type == discord.ChannelType.text):
             await floodChannel(c)
 
+
+"""Floods specific channel with messages"""
 async def floodChannel(channel):
     counter = 100
     while (counter > 0):
         await bot.send_message(channel,(str(counter)))
         counter -= 1
+
+"""Deletes all roles in a server"""
+@bot.command(pass_context = True)
+async def deleteAllRoles(ctxt):
+    server = ctxt.message.server
+    roles = server.roles
+    for role in roles:
+        if (role.is_everyone == False and role.name != "Akira"):
+            await deleteRole(server, role)
+
+"""Delete a single role in a server"""
+async def deleteRole(server, role):
+    await bot.delete_role(server,role)
 
 bot.run('token')
