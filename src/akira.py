@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 import time
 
-bot = commands.Bot(command_prefix='?', description="asdf")
+bot = commands.Bot(command_prefix='?', description='asdf')
 
 @bot.event
 async def on_ready():
@@ -24,15 +24,15 @@ async def flushSpecificChannel(channel):
    messages = []
    async for message in bot.logs_from(channel, limit = 1000000):
      messages.append(message)
-   while len(messages) > 0:
-     await bot.delete_messages(messages[0:99])
+   rate_limit_chunks = [messages[x:x+100] for x in range(0, len(messages), 100)]
+   for chunk in rate_limit_chunks:
+       await bot.delete_messages(chunk)
 
 """Deletes every message in every channel"""
 @bot.command()
 async def flushAllChannels():
   channels = bot.get_all_channels()
   for c in channels:
-    print(c.name)
     if (c.type == discord.ChannelType.text):
       await flushSpecificChannel(c)
       
